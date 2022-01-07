@@ -25,3 +25,13 @@ function operate(operator, a, b) {
         return divNum(a, b);
     }
 }
+
+const gridContainer = document.querySelector(".grid-container");
+const tileCount = 18;
+
+/*
+for (i = 0; i < tileCount; i++) {
+    const newTile = document.createElement("div");
+    gridContainer.appendChild(newTile);
+}
+*/

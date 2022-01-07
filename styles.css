@@ -7,9 +7,27 @@ body {
     width: 400px;
 }
 
+.display {
+    grid-area: display;
+}
+
+.equals {
+    grid-area: equals;
+}
+
+.nums {
+    grid-area: nums;
+}
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, auto);
-    grid-template-rows: 150px 50px repeat(4,100px);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(6, 200px);
+    grid-template-areas: 
+    "display display display display"
+    "equals equals equals equals"
+    "nums nums nums nums"
+    "nums nums nums nums"
+    "nums nums nums nums"
+    "nums nums nums nums";
 }
