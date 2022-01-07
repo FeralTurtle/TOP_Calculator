@@ -2,32 +2,33 @@ body {
     background-color: #808080;
 }
 
-.main-container {
-    height: 600px;
+/* Grid container (calculator) */
+.grid-container {
+    display: grid;
     width: 400px;
+    height: 600px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 25% 8% repeat(4, 1fr);
 }
 
+/* Grid items (button groups) */
 .display {
-    grid-area: display;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
 }
 
 .equals {
-    grid-area: equals;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 3;
 }
 
 .nums {
-    grid-area: nums;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(6, 200px);
-    grid-template-areas: 
-    "display display display display"
-    "equals equals equals equals"
-    "nums nums nums nums"
-    "nums nums nums nums"
-    "nums nums nums nums"
-    "nums nums nums nums";
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 7;
 }
