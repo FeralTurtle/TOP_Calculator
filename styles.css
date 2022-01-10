@@ -6,8 +6,8 @@ body {
     align-items: center;
 }
 
-/* Grid container (calculator) */
-.grid-container {
+/* Main container (calculator) */
+.calculator {
     display: flex;
     flex-direction: column;
     width: 400px;

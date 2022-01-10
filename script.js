@@ -26,12 +26,15 @@ function operate(operator, a, b) {
     }
 }
 
-const gridContainer = document.querySelector(".grid-container");
-const tileCount = 18;
+const gridContainer = document.querySelector(".nums");
+const tileCount = 16;
+const numsArray = ["7", "8", "9", "x",
+                    "4", "5", "6", "-",
+                    "1", "2", "3", "+",
+                    "0", ".", "bk", "C"];
 
-/*
 for (i = 0; i < tileCount; i++) {
-    const newTile = document.createElement("div");
-    gridContainer.appendChild(newTile);
+    const newNum = document.createElement("div");
+    gridContainer.appendChild(newNum);
+    newNum.textContent = numsArray[i];
 }
-*/
