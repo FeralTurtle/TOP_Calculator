@@ -28,10 +28,10 @@ function operate(operator, a, b) {
 
 const gridContainer = document.querySelector(".nums");
 const tileCount = 16;
-const numsArray = ["7", "8", "9", "x",
-                    "4", "5", "6", "-",
-                    "1", "2", "3", "+",
-                    "0", ".", "bk", "C"];
+const numsArray = ["7", "8", "9", "/",
+                    "4", "5", "6", "x",
+                    "1", "2", "3", "-",
+                    "0", ".", "C", "+"];
 
 for (i = 0; i < tileCount; i++) {
     const newNum = document.createElement("div");
