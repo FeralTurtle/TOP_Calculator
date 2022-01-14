@@ -26,15 +26,31 @@ function operate(operator, a, b) {
     }
 }
 
+function makeButtons() {
+    for (let i = 0; i < tileCount; i++) {
+        const newBtn = document.createElement("div");
+        const currentChar = numsArray[i];
+        newBtn.textContent = currentChar;
+        populateDisplayEvent(newBtn, currentChar);
+        gridContainer.appendChild(newBtn);
+    }
+}
+
+function populateDisplayEvent(newBtn, currentChar) {
+    newBtn.onclick = () => {
+        displayValue = displayValue.concat(currentChar);
+        display.append(currentChar);
+    };
+}
+
+const display = document.querySelector(".display");
 const gridContainer = document.querySelector(".nums");
 const tileCount = 16;
 const numsArray = ["7", "8", "9", "/",
                     "4", "5", "6", "x",
                     "1", "2", "3", "-",
                     "0", ".", "C", "+"];
+let displayValue = "";
+display.append(displayValue);
 
-for (i = 0; i < tileCount; i++) {
-    const newNum = document.createElement("div");
-    gridContainer.appendChild(newNum);
-    newNum.textContent = numsArray[i];
-}
+makeButtons();
