@@ -14,7 +14,7 @@ function divNum(a, b) {
     return a / b;
 }
 
-function operate(operator, a, b) {
+function operate(a, b, operator) {
     if (operator == "+") {
         return addNum(a, b);
     } else if (operator == "-") {
@@ -42,29 +42,57 @@ function addBtnClickEvents() {
 
 function gatherInput() {
     let currentChar = this.textContent;
-    console.log(currentChar);
-    // console.log(typeof(currentChar));
+    let inputType = determineInputType(currentChar);
+
+    if (inputType === "isOperator") {
+        //console.log("is an operator");
+        chosenOperator = currentChar;
+        console.log(chosenOperator);
+        operatorPressed = true;
+    } else if (inputType === "isNumber") {
+        //console.log("is a number");
+        if (operatorPressed) {
+            currentInput = currentInput.concat(currentChar);
+            console.log("currentInput: " + currentInput);
+        } else {
+            previousInput = previousInput.concat(currentChar);
+            console.log("previousInput: " + previousInput);
+        }
+    };
+}
+
+function addEqualsEvent() {
+    equalsBtn.addEventListener('click', () => {
+        operatorPressed = false;
+        console.log("operate result: " + operate(previousInput, currentInput, chosenOperator));
+    });
+}
+
+function determineInputType(currentChar) {
     if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
-        console.log("is an operator");
+        return "isOperator";
     } else if (numsArray.indexOf(currentChar) !== -1) {
-        console.log("is a number");
-    }
+        return "isNumber";
+    };
 }
 
 const display = document.querySelector(".display");
 const gridContainer = document.querySelector(".nums");
+const equalsBtn = document.querySelector(".equals");
 const tileCount = 16;
 const symbolsArray = ["7", "8", "9", "/",
                       "4", "5", "6", "x",
                       "1", "2", "3", "-",
                       "0", ".", "C", "+"];
-const numsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const operatorsArray = ["/", "x", "-", "+", "."];
 let previousInput = "";
 let chosenOperator = "";
 let currentInput = "";
 let displayValue = "";
+let operatorPressed = false;
 display.append(displayValue);
 
 makeButtons();
 addBtnClickEvents();
+addEqualsEvent();
