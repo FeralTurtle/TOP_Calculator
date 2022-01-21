@@ -44,36 +44,43 @@ function gatherInput() {
     let currentChar = this.textContent;
     let inputType = determineInputType(currentChar);
 
+    //Save input
     if (inputType === "isOperator") {
-        //console.log("is an operator");
         chosenOperator = currentChar;
         console.log(chosenOperator);
         operatorPressed = true;
     } else if (inputType === "isNumber") {
-        //console.log("is a number");
         if (operatorPressed) {
             currentInput = currentInput.concat(currentChar);
             console.log("currentInput: " + currentInput);
         } else {
             previousInput = previousInput.concat(currentChar);
             console.log("previousInput: " + previousInput);
-        }
+        };
     };
 }
 
 function addEqualsEvent() {
     equalsBtn.addEventListener('click', () => {
         operatorPressed = false;
-        console.log("operate result: " + operate(previousInput, currentInput, chosenOperator));
+        previousInput = parseInt(previousInput);
+        currentInput = parseInt(currentInput);
+        console.log(operate(previousInput, currentInput, chosenOperator));
     });
 }
 
 function determineInputType(currentChar) {
     if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
+        // console.log("isOperator");
         return "isOperator";
     } else if (numsArray.indexOf(currentChar) !== -1) {
+        // console.log("isNumber");
         return "isNumber";
     };
+}
+
+function saveInput(currentChar) {
+
 }
 
 const display = document.querySelector(".display");
@@ -85,6 +92,7 @@ const symbolsArray = ["7", "8", "9", "/",
                       "1", "2", "3", "-",
                       "0", ".", "C", "+"];
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+// const numsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 const operatorsArray = ["/", "x", "-", "+", "."];
 let previousInput = "";
 let chosenOperator = "";
