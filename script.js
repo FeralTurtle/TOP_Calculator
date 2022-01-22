@@ -19,7 +19,7 @@ function operate(a, b, operator) {
         return addNum(a, b);
     } else if (operator == "-") {
         return subNum(a, b);
-    } else if (operator == "*") {
+    } else if (operator == "x") {
         return multNum(a, b);
     } else if (operator == "/") {
         return divNum(a, b);
@@ -44,29 +44,27 @@ function gatherInput() {
     let currentChar = this.textContent;
     let inputType = determineInputType(currentChar);
 
-    //Save input
-    if (inputType === "isOperator") {
-        chosenOperator = currentChar;
-        console.log(chosenOperator);
-        operatorPressed = true;
-    } else if (inputType === "isNumber") {
-        if (operatorPressed) {
-            currentInput = currentInput.concat(currentChar);
-            console.log("currentInput: " + currentInput);
-        } else {
-            previousInput = previousInput.concat(currentChar);
-            console.log("previousInput: " + previousInput);
-        };
-    };
+    saveInput(inputType, currentChar);
 }
 
 function addEqualsEvent() {
     equalsBtn.addEventListener('click', () => {
-        operatorPressed = false;
-        previousInput = parseInt(previousInput);
-        currentInput = parseInt(currentInput);
-        console.log(operate(previousInput, currentInput, chosenOperator));
+        convertAndOperate();
     });
+}
+
+function convertAndOperate() {
+    equalsPressed = true;
+    previousInput = parseInt(previousInput);
+    currentInput = parseInt(currentInput);
+
+    console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
+    console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
+    let result = operate(previousInput, currentInput, chosenOperator);
+    previousInput = previousInput.toString();
+    currentInput = currentInput.toString();
+    console.log("result is: " + result.toString());
+    return result.toString();
 }
 
 function determineInputType(currentChar) {
@@ -79,8 +77,25 @@ function determineInputType(currentChar) {
     };
 }
 
-function saveInput(currentChar) {
-
+function saveInput(inputType, currentChar) {
+    if (inputType === "isOperator") {
+        if (operatorPressed) {
+            let result = convertAndOperate();
+            previousInput = result;
+        }
+        chosenOperator = currentChar;
+        console.log(chosenOperator);
+        operatorPressed = true;
+    } else if (inputType === "isNumber") {
+        if (operatorPressed) {
+            currentInput = "";
+            currentInput = currentInput.concat(currentChar);
+            console.log("currentInput: " + currentInput);
+        } else {
+            previousInput = previousInput.concat(currentChar);
+            console.log("previousInput: " + previousInput);
+        };
+    };
 }
 
 const display = document.querySelector(".display");
@@ -92,13 +107,13 @@ const symbolsArray = ["7", "8", "9", "/",
                       "1", "2", "3", "-",
                       "0", ".", "C", "+"];
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-// const numsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 const operatorsArray = ["/", "x", "-", "+", "."];
 let previousInput = "";
 let chosenOperator = "";
 let currentInput = "";
 let displayValue = "";
 let operatorPressed = false;
+let equalsPressed = false;
 display.append(displayValue);
 
 makeButtons();
