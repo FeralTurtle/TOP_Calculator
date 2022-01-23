@@ -24,14 +24,13 @@ body {
 
 /* Grid items (button groups) */
 .display {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
     height: 150px;
     background-color: var(--primary-color);
     border: 1px solid var(--secondary-color);
     padding: 12px;
     font-size: 65px;
+    word-wrap: break-word;
+    overflow: auto;
 }
 
 .equals {

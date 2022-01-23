@@ -31,8 +31,16 @@ function makeButtons() {
         const newBtn = document.createElement("div");
         const currentChar = symbolsArray[i];
         newBtn.textContent = currentChar;
+        populateDisplayEvent(newBtn, currentChar);
         gridContainer.appendChild(newBtn);
     }
+}
+
+function populateDisplayEvent(newBtn, currentChar) {
+    newBtn.onclick = () => {
+        displayValue = displayValue.concat(currentChar);
+        display.append(currentChar);
+    };
 }
 
 function addBtnClickEvents() {
@@ -49,7 +57,9 @@ function gatherInput() {
 
 function addEqualsEvent() {
     equalsBtn.addEventListener('click', () => {
-        convertAndOperate();
+        display.append(equalsBtn.textContent);
+        const result = convertAndOperate();
+        display.append(result);
     });
 }
 
@@ -58,9 +68,9 @@ function convertAndOperate() {
     previousInput = parseInt(previousInput);
     currentInput = parseInt(currentInput);
 
-    console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
-    console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
-    let result = operate(previousInput, currentInput, chosenOperator);
+    // console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
+    // console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
+    const result = operate(previousInput, currentInput, chosenOperator);
     previousInput = previousInput.toString();
     currentInput = currentInput.toString();
     console.log("result is: " + result.toString());
@@ -80,7 +90,7 @@ function determineInputType(currentChar) {
 function saveInput(inputType, currentChar) {
     if (inputType === "isOperator") {
         if (operatorPressed) {
-            let result = convertAndOperate();
+            const result = convertAndOperate();
             previousInput = result;
         }
         chosenOperator = currentChar;
