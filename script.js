@@ -31,28 +31,94 @@ function makeButtons() {
         const newBtn = document.createElement("div");
         const currentChar = symbolsArray[i];
         newBtn.textContent = currentChar;
-        populateDisplayEvent(newBtn, currentChar);
         gridContainer.appendChild(newBtn);
     }
 }
 
-function populateDisplayEvent(newBtn, currentChar) {
-    newBtn.onclick = () => {
-        displayValue = displayValue.concat(currentChar);
-        display.append(currentChar);
-    };
-}
-
 function addBtnClickEvents() {
     const btns = document.querySelectorAll(".nums div");
-    btns.forEach(btn => btn.addEventListener('click', gatherInput));
+    btns.forEach(btn => btn.addEventListener('click', saveInput));
+    btns.forEach(btn => btn.addEventListener('click', populateDisplayEvent));
 }
 
-function gatherInput() {
+function saveInput() {
     let currentChar = this.textContent;
     let inputType = determineInputType(currentChar);
 
-    saveInput(inputType, currentChar);
+    if (inputType === "isOperator") {
+        operatorEvent(currentChar);
+    } else if (inputType === "isNumber") {
+        numberEvent(currentChar);
+    } else if (inputType === "isClear") {
+        clearEvent();
+    };
+}
+
+function determineInputType(currentChar) {
+    if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
+        // console.log("isOperator");
+        displayValue = displayValue.concat(currentChar);
+        return "isOperator";
+    } else if (numsArray.indexOf(currentChar) !== -1) {
+        displayValue = displayValue.concat(currentChar);
+        // console.log("isNumber");
+        return "isNumber";
+    } else if (currentChar === "C") {
+        // console.log("isClear");
+        return "isClear";
+    };
+}
+
+function operatorEvent(currentChar) {
+    if (operatorPressed) {
+        const result = convertAndOperate();
+        previousInput = result;
+        currentInput = "";
+    };
+    chosenOperator = currentChar;
+    console.log(chosenOperator);
+    operatorPressed = true;
+}
+
+function numberEvent(currentChar) {
+    if (operatorPressed) {
+        currentInput = currentInput.concat(currentChar);
+        console.log("currentInput: " + currentInput);
+    } else {
+        previousInput = previousInput.concat(currentChar);
+        console.log("previousInput: " + previousInput);
+    };
+}
+
+function clearEvent() {
+    previousInput = "";
+    chosenOperator = "";
+    currentInput = "";
+    displayValue = "";
+    operatorPressed = false;
+    display.textContent = "";
+    console.log("clear");
+}
+
+function convertAndOperate() {
+    previousInput = Number(previousInput);
+    currentInput = Number(currentInput);
+
+    console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
+    console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
+    const result = +parseFloat(operate(previousInput, currentInput, chosenOperator)).toFixed(2);
+    previousInput = previousInput.toString();
+    currentInput = currentInput.toString();
+    console.log("result is: " + result.toString());
+    return result.toString();
+}
+
+function populateDisplayEvent() {
+    let currentChar = this.textContent;
+    if (currentChar !== "C") {
+        displayValue = displayValue.concat(currentChar);
+        display.append(currentChar);
+    }
 }
 
 function addEqualsEvent() {
@@ -63,50 +129,6 @@ function addEqualsEvent() {
     });
 }
 
-function convertAndOperate() {
-    equalsPressed = true;
-    previousInput = parseInt(previousInput);
-    currentInput = parseInt(currentInput);
-
-    // console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
-    // console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
-    const result = operate(previousInput, currentInput, chosenOperator);
-    previousInput = previousInput.toString();
-    currentInput = currentInput.toString();
-    console.log("result is: " + result.toString());
-    return result.toString();
-}
-
-function determineInputType(currentChar) {
-    if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
-        // console.log("isOperator");
-        return "isOperator";
-    } else if (numsArray.indexOf(currentChar) !== -1) {
-        // console.log("isNumber");
-        return "isNumber";
-    };
-}
-
-function saveInput(inputType, currentChar) {
-    if (inputType === "isOperator") {
-        if (operatorPressed) {
-            const result = convertAndOperate();
-            previousInput = result;
-        }
-        chosenOperator = currentChar;
-        console.log(chosenOperator);
-        operatorPressed = true;
-    } else if (inputType === "isNumber") {
-        if (operatorPressed) {
-            currentInput = "";
-            currentInput = currentInput.concat(currentChar);
-            console.log("currentInput: " + currentInput);
-        } else {
-            previousInput = previousInput.concat(currentChar);
-            console.log("previousInput: " + previousInput);
-        };
-    };
-}
 
 const display = document.querySelector(".display");
 const gridContainer = document.querySelector(".nums");
@@ -116,14 +138,13 @@ const symbolsArray = ["7", "8", "9", "/",
                       "4", "5", "6", "x",
                       "1", "2", "3", "-",
                       "0", ".", "C", "+"];
-const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const operatorsArray = ["/", "x", "-", "+", "."];
+const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+const operatorsArray = ["/", "x", "-", "+"];
 let previousInput = "";
 let chosenOperator = "";
 let currentInput = "";
 let displayValue = "";
 let operatorPressed = false;
-let equalsPressed = false;
 display.append(displayValue);
 
 makeButtons();
