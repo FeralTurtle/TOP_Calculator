@@ -22,7 +22,7 @@ function operate(a, b, operator) {
     } else if (operator == "x") {
         return multNum(a, b);
     } else if (operator == "/") {
-        return divNum(a, b);
+        return (b == 0) ? display.textContent = ("Dividing by zero is a violation of mathematical law!") : divNum(a, b);
     }
 }
 
@@ -56,15 +56,12 @@ function saveInput() {
 
 function determineInputType(currentChar) {
     if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
-        // console.log("isOperator");
         displayValue = displayValue.concat(currentChar);
         return "isOperator";
     } else if (numsArray.indexOf(currentChar) !== -1) {
         displayValue = displayValue.concat(currentChar);
-        // console.log("isNumber");
         return "isNumber";
     } else if (currentChar === "C") {
-        // console.log("isClear");
         return "isClear";
     };
 }
@@ -76,17 +73,14 @@ function operatorEvent(currentChar) {
         currentInput = "";
     };
     chosenOperator = currentChar;
-    console.log(chosenOperator);
     operatorPressed = true;
 }
 
 function numberEvent(currentChar) {
     if (operatorPressed) {
         currentInput = currentInput.concat(currentChar);
-        console.log("currentInput: " + currentInput);
     } else {
         previousInput = previousInput.concat(currentChar);
-        console.log("previousInput: " + previousInput);
     };
 }
 
@@ -97,19 +91,14 @@ function clearEvent() {
     displayValue = "";
     operatorPressed = false;
     display.textContent = "";
-    console.log("clear");
 }
 
 function convertAndOperate() {
     previousInput = Number(previousInput);
     currentInput = Number(currentInput);
-
-    console.log("operating previousInput " + previousInput + " of type " + typeof(previousInput));
-    console.log("operating currentInput: " + currentInput + " of type " + typeof(currentInput));
     const result = +parseFloat(operate(previousInput, currentInput, chosenOperator)).toFixed(2);
     previousInput = previousInput.toString();
     currentInput = currentInput.toString();
-    console.log("result is: " + result.toString());
     return result.toString();
 }
 
@@ -123,8 +112,16 @@ function populateDisplayEvent() {
 
 function addEqualsEvent() {
     equalsBtn.addEventListener('click', () => {
-        display.append(equalsBtn.textContent);
+        if (chosenOperator === undefined) {
+            return;
+        }
         const result = convertAndOperate();
+        if (result === "NaN") {
+            display.append(equalsBtn.textContent);
+            display.append(previousInput);
+            return;
+        }
+        display.append(equalsBtn.textContent);
         display.append(result);
     });
 }
@@ -141,7 +138,7 @@ const symbolsArray = ["7", "8", "9", "/",
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 const operatorsArray = ["/", "x", "-", "+"];
 let previousInput = "";
-let chosenOperator = "";
+let chosenOperator;
 let currentInput = "";
 let displayValue = "";
 let operatorPressed = false;
