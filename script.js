@@ -126,6 +126,20 @@ function addEqualsEvent() {
     });
 }
 
+function addAdditionalCSSClasses() {
+    const btns = document.querySelectorAll(".nums div");
+    btns.forEach(btn => {
+        let currentChar = btn.textContent;
+        let inputType = determineInputType(currentChar);
+
+        if (inputType === "isOperator") {
+            btn.className = "operator";
+        } else if (inputType === "isClear") {
+            btn.className = "clear";
+        }
+    });
+}
+
 
 const display = document.querySelector(".display");
 const gridContainer = document.querySelector(".nums");
@@ -147,3 +161,4 @@ display.append(displayValue);
 makeButtons();
 addBtnClickEvents();
 addEqualsEvent();
+addAdditionalCSSClasses();
