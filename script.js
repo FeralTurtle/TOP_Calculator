@@ -22,7 +22,7 @@ function operate(a, b, operator) {
     } else if (operator == "x") {
         return multNum(a, b);
     } else if (operator == "/") {
-        return (b == 0) ? display.textContent = ("Dividing by zero is a violation of mathematical law!") : divNum(a, b);
+        return divNum(a, b);
     }
 }
 
@@ -56,10 +56,10 @@ function saveInput() {
 
 function determineInputType(currentChar) {
     if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
-        displayValue = displayValue.concat(currentChar);
+        displayTopValue = displayTopValue.concat(currentChar);
         return "isOperator";
     } else if (numsArray.indexOf(currentChar) !== -1) {
-        displayValue = displayValue.concat(currentChar);
+        displayTopValue = displayTopValue.concat(currentChar);
         return "isNumber";
     } else if (currentChar === "C") {
         return "isClear";
@@ -85,12 +85,14 @@ function numberEvent(currentChar) {
 }
 
 function clearEvent() {
+    operatorPressed = false;
     previousInput = "";
     chosenOperator = "";
     currentInput = "";
-    displayValue = "";
-    operatorPressed = false;
-    display.textContent = "";
+    displayTopValue = "";
+    displayBottomValue = "";
+    displayTop.textContent = "";
+    displayBottom.textContent = "";
 }
 
 function convertAndOperate() {
@@ -99,15 +101,38 @@ function convertAndOperate() {
     const result = +parseFloat(operate(previousInput, currentInput, chosenOperator)).toFixed(2);
     previousInput = previousInput.toString();
     currentInput = currentInput.toString();
-    return result.toString();
+    if (currentInput == 0) {
+        clearEvent();
+        displayTop.textContent = "Cannot divide by 0.";
+        return;
+    } else {
+        return result.toString();
+    };
 }
 
 function populateDisplayEvent() {
     let currentChar = this.textContent;
+    let inputType = determineInputType(currentChar);
+
     if (currentChar !== "C") {
-        displayValue = displayValue.concat(currentChar);
-        display.append(currentChar);
-    }
+        if (inputType === "isOperator") {
+            if (operatorPressed) {
+                displayTopValue = "";
+                displayTop.textContent = "";
+            };
+            displayTopValue = displayTopValue.concat(currentChar);
+            displayTop.append(previousInput);
+            displayTop.append(currentChar);
+        } else if (operatorPressed) {
+            displayBottom.textContent = "";
+            displayBottomValue = currentInput;
+            displayTopValue = displayTopValue.concat(currentChar);
+            displayBottom.append(displayBottomValue);
+        } else {
+            displayBottomValue = displayBottomValue.concat(currentChar);
+            displayBottom.append(currentChar);
+        };
+    };
 }
 
 function addEqualsEvent() {
@@ -116,13 +141,13 @@ function addEqualsEvent() {
             return;
         }
         const result = convertAndOperate();
-        if (result === "NaN") {
-            display.append(equalsBtn.textContent);
-            display.append(previousInput);
+        if (currentInput == 0) {
             return;
         }
-        display.append(equalsBtn.textContent);
-        display.append(result);
+        displayTop.append(currentInput);
+        displayTop.append(equalsBtn.textContent);
+        displayBottomValue = "";
+        displayBottom.textContent = result;
     });
 }
 
@@ -136,27 +161,29 @@ function addAdditionalCSSClasses() {
             btn.className = "operator";
         } else if (inputType === "isClear") {
             btn.className = "clear";
-        }
+        };
     });
 }
 
 
-const display = document.querySelector(".display");
+const displayTop = document.querySelector(".display-top");
+const displayBottom = document.querySelector(".display-bottom");
 const gridContainer = document.querySelector(".nums");
 const equalsBtn = document.querySelector(".equals");
 const tileCount = 16;
 const symbolsArray = ["7", "8", "9", "/",
-                      "4", "5", "6", "x",
-                      "1", "2", "3", "-",
-                      "0", ".", "C", "+"];
+    "4", "5", "6", "x",
+    "1", "2", "3", "-",
+    "0", ".", "C", "+"];
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 const operatorsArray = ["/", "x", "-", "+"];
 let previousInput = "";
 let chosenOperator;
 let currentInput = "";
-let displayValue = "";
+let displayTopValue = "";
+let displayBottomValue = "";
 let operatorPressed = false;
-display.append(displayValue);
+displayTop.append(displayTopValue);
 
 makeButtons();
 addBtnClickEvents();
