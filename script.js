@@ -114,6 +114,10 @@ function populateDisplayEvent() {
     let currentChar = this.textContent;
     let inputType = determineInputType(currentChar);
 
+    arrangeDisplayValues(currentChar, inputType);
+}
+
+function arrangeDisplayValues(currentChar, inputType) {
     if (currentChar !== "C") {
         if (inputType === "isOperator") {
             if (operatorPressed) {
@@ -172,9 +176,9 @@ const gridContainer = document.querySelector(".nums");
 const equalsBtn = document.querySelector(".equals");
 const tileCount = 16;
 const symbolsArray = ["7", "8", "9", "/",
-    "4", "5", "6", "x",
-    "1", "2", "3", "-",
-    "0", ".", "C", "+"];
+                      "4", "5", "6", "x",
+                      "1", "2", "3", "-",
+                      "0", ".", "C", "+"];
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 const operatorsArray = ["/", "x", "-", "+"];
 let previousInput = "";
