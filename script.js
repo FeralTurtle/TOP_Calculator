@@ -23,7 +23,7 @@ function operate(a, b, operator) {
         return multNum(a, b);
     } else if (operator == "/") {
         return divNum(a, b);
-    }
+    };
 }
 
 function makeButtons() {
@@ -32,41 +32,59 @@ function makeButtons() {
         const currentChar = symbolsArray[i];
         newBtn.textContent = currentChar;
         gridContainer.appendChild(newBtn);
-    }
+    };
 }
 
 function addBtnClickEvents() {
     const btns = document.querySelectorAll(".nums div");
+
+    document.addEventListener('keydown', saveInput);
     btns.forEach(btn => btn.addEventListener('click', saveInput));
-    btns.forEach(btn => btn.addEventListener('click', populateDisplayEvent));
+    equalsBtn.addEventListener('click', saveInput);
 }
 
-function saveInput() {
-    let currentChar = this.textContent;
+function saveInput(e) {
+    let currentChar;
+    e.key ? currentChar = e.key : currentChar = this.textContent;
     let inputType = determineInputType(currentChar);
 
-    if (inputType === "isOperator") {
-        operatorEvent(currentChar);
-    } else if (inputType === "isNumber") {
-        numberEvent(currentChar);
-    } else if (inputType === "isClear") {
-        clearEvent();
+    switch (inputType) {
+        case "isOperator":
+            saveOperator(currentChar);
+            break;
+        case "isNumber":
+            saveNumber(currentChar);
+            break;
+        case "isEquals":
+            equals();
+            break;
+        case "isClear":
+            clear();
+            break;
+    };
+
+    if (inputType !== "invalid") {
+        populateDisplay(currentChar, inputType);
     };
 }
 
 function determineInputType(currentChar) {
     if (operatorsArray.indexOf(currentChar) !== -1) { // Checks operatorsArray if currentChar isn't not (is) present.
-        displayTopValue = displayTopValue.concat(currentChar);
+        displayTopValue += currentChar;
         return "isOperator";
     } else if (numsArray.indexOf(currentChar) !== -1) {
-        displayTopValue = displayTopValue.concat(currentChar);
+        displayTopValue += currentChar;
         return "isNumber";
-    } else if (currentChar === "C") {
+    } else if (currentChar === "=") {
+        return "isEquals";
+    } else if (currentChar === "c") {
         return "isClear";
+    } else {
+        return "invalid";
     };
 }
 
-function operatorEvent(currentChar) {
+function saveOperator(currentChar) {
     if (operatorPressed) {
         const result = convertAndOperate();
         previousInput = result;
@@ -76,15 +94,15 @@ function operatorEvent(currentChar) {
     operatorPressed = true;
 }
 
-function numberEvent(currentChar) {
+function saveNumber(currentChar) {
     if (operatorPressed) {
-        currentInput = currentInput.concat(currentChar);
+        currentInput += currentChar;
     } else {
-        previousInput = previousInput.concat(currentChar);
+        previousInput += currentChar;
     };
 }
 
-function clearEvent() {
+function clear() {
     operatorPressed = false;
     previousInput = "";
     chosenOperator = "";
@@ -102,7 +120,7 @@ function convertAndOperate() {
     previousInput = previousInput.toString();
     currentInput = currentInput.toString();
     if (currentInput == 0) {
-        clearEvent();
+        clear();
         displayTop.textContent = "Cannot divide by 0.";
         return;
     } else {
@@ -110,49 +128,44 @@ function convertAndOperate() {
     };
 }
 
-function populateDisplayEvent() {
-    let currentChar = this.textContent;
-    let inputType = determineInputType(currentChar);
-
-    arrangeDisplayValues(currentChar, inputType);
-}
-
-function arrangeDisplayValues(currentChar, inputType) {
-    if (currentChar !== "C") {
+function populateDisplay(currentChar, inputType) {
+    if (currentChar !== "c") {
         if (inputType === "isOperator") {
             if (operatorPressed) {
                 displayTopValue = "";
                 displayTop.textContent = "";
             };
-            displayTopValue = displayTopValue.concat(currentChar);
+            displayTopValue += currentChar;
             displayTop.append(previousInput);
             displayTop.append(currentChar);
         } else if (operatorPressed) {
-            displayBottom.textContent = "";
-            displayBottomValue = currentInput;
-            displayTopValue = displayTopValue.concat(currentChar);
-            displayBottom.append(displayBottomValue);
+            if (currentChar === "=") {
+                return;
+            } else {
+                displayBottom.textContent = "";
+                displayBottomValue = currentInput;
+                displayTopValue += currentChar;
+                displayBottom.append(displayBottomValue);
+            };
         } else {
-            displayBottomValue = displayBottomValue.concat(currentChar);
+            displayBottomValue += currentChar;
             displayBottom.append(currentChar);
         };
     };
 }
 
-function addEqualsEvent() {
-    equalsBtn.addEventListener('click', () => {
-        if (chosenOperator === undefined) {
-            return;
-        }
-        const result = convertAndOperate();
-        if (currentInput == 0) {
-            return;
-        }
-        displayTop.append(currentInput);
-        displayTop.append(equalsBtn.textContent);
-        displayBottomValue = "";
-        displayBottom.textContent = result;
-    });
+function equals() {
+    if (chosenOperator === undefined) {
+        return;
+    }
+    const result = convertAndOperate();
+    if (currentInput == 0) {
+        return;
+    };
+    displayTop.append(currentInput);
+    displayTop.append(equalsBtn.textContent);
+    displayBottomValue = "";
+    displayBottom.textContent = result;
 }
 
 function addAdditionalCSSClasses() {
@@ -178,7 +191,7 @@ const tileCount = 16;
 const symbolsArray = ["7", "8", "9", "/",
                       "4", "5", "6", "x",
                       "1", "2", "3", "-",
-                      "0", ".", "C", "+"];
+                      "0", ".", "c", "+"];
 const numsArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 const operatorsArray = ["/", "x", "-", "+"];
 let previousInput = "";
@@ -191,5 +204,4 @@ displayTop.append(displayTopValue);
 
 makeButtons();
 addBtnClickEvents();
-addEqualsEvent();
 addAdditionalCSSClasses();
